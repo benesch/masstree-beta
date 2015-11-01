@@ -75,6 +75,12 @@ class key {
         : ikey0_(ikey),
           len_(ikey_size + suf.len), s_(suf.s - ikey_size), first_(s_) {
     }
+    /** @brief Copy constructor. */
+    key(const key& rhs)
+        : ikey0_(rhs.ikey0_), len_(rhs.len_) {
+        first_ = strdup(rhs.first_);
+        s_ = first_ + (rhs.s_ - rhs.first_);
+    }
 
     /** @brief Test if this key is empty (holds the empty string). */
     bool empty() const {
@@ -182,15 +188,7 @@ class key {
         return full_string();
     }
     bool increment() {
-        // Return true iff wrapped.
-        if (has_suffix()) {
-            ++ikey0_;
-            len_ = 1;
-            return unlikely(!ikey0_);
-        } else {
-            ++len_;
-            return false;
-        }
+        len_ = ikey_size;
     }
     void assign_store_ikey(ikey_type ikey) {
         ikey0_ = ikey;
